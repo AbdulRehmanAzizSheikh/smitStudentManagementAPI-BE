@@ -1,13 +1,12 @@
-import express from "express"
-import registerController from "../controllers/auth/register.js"
-import verifyEmailController from "../controllers/auth/verifyEmail.js"
+import express from "express";
+import registerController from "../controllers/auth/register.js";
+import verifyEmailController from "../controllers/auth/verifyEmail.js";
+import loginController from "../controllers/auth/login.js";
 
-const authRoutes = express.Router()
+const authRoutes = express.Router();
 
-authRoutes.post("/register", registerController)
-authRoutes.patch("/verify-email", verifyEmailController)
-authRoutes.get("/login", (req, res) => {
-    res.send("login route called")
-})
+authRoutes.post("/register", registerController);
+authRoutes.patch("/verify-email", verifyEmailController);
+authRoutes.patch("/login", loginController);
 
-export default authRoutes
+export default authRoutes;
