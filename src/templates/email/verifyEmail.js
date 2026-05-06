@@ -1,35 +1,13 @@
-import User from "../../models/user.js";
-import bcrypt from "bcrypt";
-import { generateToken } from "../../utils/token/index.js";
-import mailSender from "../../utils/mailSender/index.js";
+// src/templates/email/verifyEmail.js
 
-const registerController = async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationCode = await generateToken({ payload: { email } });
-    await User.create({
-      username,
-      email,
-      password: hashedPassword,
-      verify: {
-        token: verificationCode.token,
-      },
-    });
-    const emailStatus = await mailSender({
-      to: email,
-      subject: "Verify Your Email",
-      html: `<html>
+export const verifyEmailTemplate = (token) => {
+  return `<html>
 <head>
     <meta charset="UTF-8">
     <title>Email Verification</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
-<p>Your Verification Code is: ${verificationCode.token}</p>
+<p>Your Verification Code is: ${token}</p>
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center" style="padding: 40px 0;">
@@ -51,7 +29,6 @@ const registerController = async (req, res) => {
                             <table border="0" cellspacing="0" cellpadding="0" style="margin-top: 30px;">
                                 <tr>
                                     <td align="center" style="border-radius: 4px;" bgcolor="#4A90E2">
-                                        <!-- Yahan tum apna frontend URL aur token dynamic dalo ge -->
                                         <a href="https://www.myinstants.com/media/sounds/fahhhhhhhhhhhhhh.mp3" target="_blank" style="padding: 15px 25px; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; display: inline-block;">Verify Account</a>
                                     </td>
                                 </tr>
@@ -73,17 +50,5 @@ const registerController = async (req, res) => {
         </tr>
     </table>
 </body>
-</html>`,
-    });
-    if (emailStatus.success) {
-      return res.status(201).json({ message: "User registered successfully" });
-    }
-    await User.deleteOne({ email });
-    return res.status(500).json({ message: "Failed to send email" });
-  } catch (error) {
-    console.log("error in register", error);
-    return res.status(500).json({ message: error.message });
-  }
+</html>`;
 };
-
-export default registerController;

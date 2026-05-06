@@ -2,6 +2,24 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    firstName: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+    },
+    age: {
+      type: Number,
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female", "other"],
+        message: "{VALUE} is not a valid gender",
+      },
+    },
     username: {
       type: String,
       required: [true, "Username is required"],
