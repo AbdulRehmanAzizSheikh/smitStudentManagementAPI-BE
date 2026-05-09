@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../../utils/token/index.js";
 import mailSender from "../../utils/mailSender/index.js";
 import { verifyEmailTemplate } from "../../templates/email/verifyEmail.js";
-import { successResponse } from "../../utils/responseHandler/succesResponse.js";
+import { successResponse } from "../../utils/responseHandlers/succesResponse.js";
 
 const registerController = async (req, res, next) => {
   try {
@@ -31,14 +31,7 @@ const registerController = async (req, res, next) => {
     });
 
     if (emailStatus.success) {
-      return successResponse(
-        res,
-        201,
-        true,
-        "User registered successfully",
-        {},
-        null,
-      );
+      return successResponse(res, 201, true, "User registered successfully");
     }
 
     await User.deleteOne({ email });

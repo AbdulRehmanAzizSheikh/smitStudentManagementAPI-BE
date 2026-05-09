@@ -3,7 +3,7 @@ export const successResponse = (
   statusCode,
   status,
   message,
-  data = {},
+  data,
   token,
 ) => {
   const successData = {};

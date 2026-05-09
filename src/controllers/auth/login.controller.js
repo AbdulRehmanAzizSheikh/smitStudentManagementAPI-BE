@@ -1,7 +1,7 @@
 import User from "../../models/user.js";
 import { generateToken } from "../../utils/token/index.js";
 import bcrypt from "bcrypt";
-import { successResponse } from "../../utils/responseHandler/succesResponse.js";
+import { successResponse } from "../../utils/responseHandlers/succesResponse.js";
 
 const loginController = async (req, res, next) => {
   try {
@@ -26,18 +26,13 @@ const loginController = async (req, res, next) => {
     await user.loginTokens.push({
       token: token.token,
     });
+    res.cookie("token", token.token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
     await user.save();
-    return successResponse(
-      res,
-      200,
-      true,
-      "Login successful",
-      {
-        token: token.token,
-        user,
-      },
-      null,
-    );
+    return successResponse(res, 200, true, "Login successful");
   } catch (error) {
     next(error);
   }
